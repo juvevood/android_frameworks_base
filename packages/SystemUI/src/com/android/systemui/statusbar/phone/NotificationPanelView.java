@@ -104,6 +104,10 @@ public class NotificationPanelView extends PanelView implements
     static final String COUNTER_PANEL_OPEN_QS = "panel_open_qs";
     private static final String COUNTER_PANEL_OPEN_PEEK = "panel_open_peek";
 
+
+    private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "juvesystem:STATUS_BAR_QUICK_QS_PULLDOWN";
+    private static final String DOUBLE_TAP_SLEEP_GESTURE = "juvesystem:DOUBLE_TAP_SLEEP_GESTURE";
+
     private static final Rect mDummyDirtyRect = new Rect(0, 0, 1, 1);
 
     public static final long DOZE_ANIMATION_DURATION = 700;
@@ -302,6 +306,8 @@ public class NotificationPanelView extends PanelView implements
             .setCustomInterpolator(PANEL_ALPHA.getProperty(), Interpolators.ALPHA_IN);
 
     private int mOneFingerQuickSettingsIntercept;
+    private boolean mDoubleTapToSleepEnabled;
+    private GestureDetector mDoubleTapGesture;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -319,6 +325,14 @@ public class NotificationPanelView extends PanelView implements
                 Utils.switchScreenOff(mContext);
                 return true;
             }
+        });
+        mDoubleTapGesture = new GestureDetector(mContext,
+                new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+                        Utils.switchScreenOff(mContext);
+                        return true;
+                    }
         });
     }
 
@@ -352,12 +366,26 @@ public class NotificationPanelView extends PanelView implements
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         FragmentHostManager.get(this).addTagListener(QS.TAG, mFragmentListener);
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, STATUS_BAR_QUICK_QS_PULLDOWN);
+        tunerService.addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         FragmentHostManager.get(this).removeTagListener(QS.TAG, mFragmentListener);
+        Dependency.get(TunerService.class).removeTunable(this);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        if (STATUS_BAR_QUICK_QS_PULLDOWN.equals(key)) {
+            mOneFingerQuickSettingsIntercept = newValue == null ? 1 : Integer.parseInt(newValue);
+        } else if (DOUBLE_TAP_SLEEP_GESTURE.equals(key)) {
+            mDoubleTapToSleepEnabled = newValue == null || Integer.parseInt(newValue) == 1;
+        }
     }
 
     @Override
@@ -898,6 +926,10 @@ public class NotificationPanelView extends PanelView implements
         if (mIsLockscreenDoubleTapEnabled
                 && mStatusBarState == StatusBarState.KEYGUARD) {
             mLockscreenDoubleTapToSleep.onTouchEvent(event);
+        }
+        if (mDoubleTapToSleepEnabled
+                && mStatusBarState == StatusBarState.KEYGUARD) {
+            mDoubleTapGesture.onTouchEvent(event);
         }
         initDownStates(event);
         if (mListenForHeadsUp && !mHeadsUpTouchHelper.isTrackingHeadsUp()
