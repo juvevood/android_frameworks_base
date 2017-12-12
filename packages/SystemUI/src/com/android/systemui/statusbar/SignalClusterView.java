@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2018-2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,6 +119,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
     private boolean mBlockEthernet;
     private boolean mActivityEnabled;
     private boolean mForceBlockWifi;
+    private boolean mBlockVpn;
 
     private final IconLogger mIconLogger = Dependency.get(IconLogger.class);
 
@@ -176,6 +178,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         boolean blockMobile = blockList.contains(SLOT_MOBILE);
         boolean blockWifi = blockList.contains(SLOT_WIFI);
         boolean blockEthernet = blockList.contains(SLOT_ETHERNET);
+        boolean blockVpn = blockList.contains(SLOT_VPN);
 
         if (blockAirplane != mBlockAirplane || blockMobile != mBlockMobile
                 || blockEthernet != mBlockEthernet || blockWifi != mBlockWifi) {
@@ -186,6 +189,11 @@ public class SignalClusterView extends LinearLayout implements NetworkController
             // Re-register to get new callbacks.
             mNetworkController.removeCallback(this);
             mNetworkController.addCallback(this);
+        }
+        if (blockVpn != mBlockVpn) {
+            mBlockVpn = blockVpn;
+            mVpnVisible = mSecurityController.isVpnEnabled() && !mBlockVpn;
+            apply();
         }
     }
 
@@ -226,7 +234,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mVpnVisible = mSecurityController.isVpnEnabled();
+        mVpnVisible = mSecurityController.isVpnEnabled() && !mBlockVpn;
         mVpnIconId = currentVpnIconId(mSecurityController.isVpnBranded());
 
         for (PhoneState state : mPhoneStates) {
@@ -270,7 +278,7 @@ public class SignalClusterView extends LinearLayout implements NetworkController
         post(new Runnable() {
             @Override
             public void run() {
-                mVpnVisible = mSecurityController.isVpnEnabled();
+                mVpnVisible = mSecurityController.isVpnEnabled() && !mBlockVpn;
                 mVpnIconId = currentVpnIconId(mSecurityController.isVpnBranded());
                 apply();
             }
