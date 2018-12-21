@@ -4166,6 +4166,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS
                             || longPressBehavior == NavbarUtilities.KEY_ACTION_VOLUME_PANEL
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_VOLUME_PANEL
+                            || longPressBehavior == NavbarUtilities.KEY_ACTION_KILL_APP
+                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_KILL_APP
                             || longPressBehavior == NavbarUtilities.KEY_ACTION_LAST_APP
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_LAST_APP) {
                         preloadRecentApps();
@@ -9854,6 +9856,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case NavbarUtilities.KEY_ACTION_VOLUME_PANEL:
                 toggleVolumePanel();
                 break;
+            case NavbarUtilities.KEY_ACTION_KILL_APP:
+                toggleKillApp();
+                break;
         }
     }
 
@@ -9899,5 +9904,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void toggleVolumePanel() {
         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
         Utils.toggleVolumePanel(mContext);
+    }
+
+    // Kill app
+    private void toggleKillApp() {
+        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
+        Utils.killForegroundApp(mContext, mCurrentUserId);
     }
 }
