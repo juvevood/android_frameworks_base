@@ -8574,7 +8574,7 @@ public final class Settings {
         /** @hide */
         public static final Validator STATUSBAR_CLOCK_DATE_POSITION_VALIDATOR =
                 new SettingsValidators.InclusiveIntegerRangeValidator(0, 1);
-
+        /*
          * Boolean value whether to link ringtone and notification volume
          * @hide
          */
