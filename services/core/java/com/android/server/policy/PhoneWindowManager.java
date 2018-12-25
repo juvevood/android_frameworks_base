@@ -1046,7 +1046,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     final float distance = event.values[0];
                     if (distance >= PROXIMITY_DISTANCE_THRESHOLD ||
                             distance >= mProximitySensor.getMaximumRange()) {
-                        toggleFlashLight();
+                        Utils.toggleCameraFlash();
                     }
                 }
 
@@ -1085,7 +1085,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mHandler.sendMessageDelayed(newMsg, mProximityTimeOut);
             runPostProximityCheck();
         } else {
-            toggleFlashLight();
+            Utils.toggleCameraFlash();
         }
     }
 
@@ -9861,28 +9861,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 NavbarUtilities.toggleSplitScreen();
                 break;
             case NavbarUtilities.KEY_ACTION_FLASHLIGHT:
-                toggleFlashLight();
+                Utils.toggleCameraFlash();
                 break;
             case NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS:
-                toggleClearNotifications();
+                Utils.clearAllNotifications();
                 break;
             case NavbarUtilities.KEY_ACTION_VOLUME_PANEL:
-                toggleVolumePanel();
+                Utils.toggleVolumePanel(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_KILL_APP:
-                toggleKillApp();
+                Utils.killForegroundApp(mContext, mCurrentUserId);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREEN_OFF:
-                toggleScreenOff();
+                Utils.switchScreenOff(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_NOTIFICATIONS:
-                toggleNotifications();
+                Utils.Notifications();
                 break;
             case NavbarUtilities.KEY_ACTION_POWER_MENU:
                 triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, false, true);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREENSHOT:
-                toggleScreenshot();
+                Utils.takeScreenshot(true);
                 break;
         }
     }
@@ -9911,47 +9911,5 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 NavbarUtilities.launchCamera();
                 break;
         }
-    }
-
-    // Flashlight
-    private void toggleFlashLight() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.toggleCameraFlash();
-    }
-
-    // Clear notifications
-    private void toggleClearNotifications() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.clearAllNotifications();
-    }
-
-    // Volume panel
-    private void toggleVolumePanel() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.toggleVolumePanel(mContext);
-    }
-
-    // Kill app
-    private void toggleKillApp() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.killForegroundApp(mContext, mCurrentUserId);
-    }
-
-    // Sleep
-    private void toggleScreenOff() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.switchScreenOff(mContext);
-    }
-
-    // Notifications
-    private void toggleNotifications() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.Notifications();
-    }
-
-    // Screenshot
-    private void toggleScreenshot() {
-        performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
-        Utils.takeScreenshot(true);
     }
 }
