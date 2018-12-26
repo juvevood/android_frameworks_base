@@ -3982,6 +3982,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final boolean appSwitchKey = keyCode == KeyEvent.KEYCODE_APP_SWITCH;
         final boolean homeKey = keyCode == KeyEvent.KEYCODE_HOME;
         final boolean menuKey = keyCode == KeyEvent.KEYCODE_MENU;
+        final boolean backKey = keyCode == KeyEvent.KEYCODE_BACK;
 
         final boolean keyguardOn = keyguardOn();
 
@@ -4071,8 +4072,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
 
         // Custom event handling for supported key codes.
-        if (NavbarUtilities.canApplyCustomPolicy(keyCode) && !isCustomSource) {
-            if ((menuKey || appSwitchKey) && keyguardOn) {
+        if (!Utils.isInLockTaskMode() && NavbarUtilities.canApplyCustomPolicy(keyCode) && !isCustomSource) {
+            if ((menuKey || backKey || appSwitchKey) && keyguardOn) {
                 // Don't handle the key.
                 return -1;
             }
@@ -4160,22 +4161,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_APP_SWITCH
                             || longPressBehavior == NavbarUtilities.KEY_ACTION_SPLIT_SCREEN
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_SPLIT_SCREEN
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_FLASHLIGHT
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_FLASHLIGHT
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_VOLUME_PANEL
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_VOLUME_PANEL
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_KILL_APP
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_KILL_APP
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_SCREEN_OFF
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_SCREEN_OFF
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_NOTIFICATIONS
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_NOTIFICATIONS
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_POWER_MENU
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_POWER_MENU
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_SCREENSHOT
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_SCREENSHOT
                             || longPressBehavior == NavbarUtilities.KEY_ACTION_LAST_APP
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_LAST_APP) {
                         preloadRecentApps();
@@ -6645,13 +6630,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 // Don't allow key events from hw keys when navbar is enabled.
                 return 0;
-            } else if (!interactive) {
+            } else if (!interactive && !Utils.isInLockTaskMode()) {
                 if (DEBUG_INPUT) {
                     Log.d(TAG, "interceptKeyBeforeQueueing(): key policy: screen not interactive, discard hw event.");
                 }
                 // Ensure nav keys are handled on full interactive screen only.
                 return 0;
-            } else if (interactive) {
+            } else if (interactive && !Utils.isInLockTaskMode()) {
                 if (!down) {
                     // Make sure we consume hw key events properly. Discard them
                     // here if the event is already been consumed. This case can
