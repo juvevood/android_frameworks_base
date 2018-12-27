@@ -1044,6 +1044,7 @@ public class Build {
             return false;
         }
 
+	/*Don't check "fingerprints" information
         if (!TextUtils.isEmpty(vendor)) {
             if (!Objects.equals(system, vendor)) {
                 Slog.e(TAG, "Mismatched fingerprints; system reported " + system
@@ -1051,6 +1052,7 @@ public class Build {
                 return false;
             }
         }
+	*/
 
         /* TODO: Figure out issue with checks failing
         if (!TextUtils.isEmpty(bootimage)) {
