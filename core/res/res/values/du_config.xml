@@ -143,12 +143,15 @@
     <integer name="config_doubleTapOnBackKeyBehavior">0</integer>
     <integer name="config_longPressOnAssistKeyBehavior">0</integer>
     <integer name="config_doubleTapOnAssistKeyBehavior">0</integer>
-    <integer name="config_longPressOnAppSwitchKeyBehavior">8</integer>
-    <integer name="config_doubleTapOnAppSwitchKeyBehavior">7</integer>
+    <integer name="config_longPressOnAppSwitchKeyBehavior">7</integer>
+    <integer name="config_doubleTapOnAppSwitchKeyBehavior">6</integer>
     <integer name="config_longPressOnCameraKeyBehavior">0</integer>
     <integer name="config_doubleTapOnCameraKeyBehavior">0</integer>
 
     <!-- Internal default to navigation bar value -->
     <bool name="config_defaultToNavigationBar">true</bool>
+
+    <!-- Whether auto face unlock is enabled by default -->
+    <bool name="config_autoFaceUnlockEnabledByDefault">false</bool>
 
 </resources>
