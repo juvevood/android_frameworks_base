@@ -60,10 +60,12 @@ import java.util.Locale;
 public class Utils {
 
     private static final String TAG = Utils.class.getSimpleName();
-    private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    public static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     public static final String INTENT_SCREENSHOT = "action_take_screenshot";
     public static final String INTENT_REGION_SCREENSHOT = "action_take_region_screenshot";
+
+    public static boolean killed = false;
 
     // Check to see if device is WiFi only
     public static boolean isWifiOnly(Context context) {
@@ -366,7 +368,8 @@ public class Utils {
                                 final ActivityManager am = (ActivityManager)
                                         context.getSystemService(Context.ACTIVITY_SERVICE);
                                 final List<ActivityManager.RecentTaskInfo> recentTasks =
-                                        am.getRecentTasks(ActivityManager.getMaxRecentTasksStatic(), UserHandle.USER_CURRENT);
+                                        am.getRecentTasks(ActivityManager.getMaxRecentTasksStatic(),
+                                                UserHandle.USER_CURRENT);
                                 final int size = recentTasks.size();
                                 for (int i = 0; i < size; i++) {
                                     ActivityManager.RecentTaskInfo recentInfo = recentTasks.get(i);
@@ -380,12 +383,13 @@ public class Utils {
                         }
                     } else {
                         Process.killProcess(appInfo.pid);
-                        return true;
+                        return killed;
                     }
                 }
             }
         } catch (RemoteException remoteException) {
             // Do nothing; just let it go.
+            killed = false;
         }
         return false;
     }

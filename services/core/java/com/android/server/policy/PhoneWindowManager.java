@@ -270,6 +270,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.autofill.AutofillManagerInternal;
 import android.view.inputmethod.InputMethodManagerInternal;
+import android.widget.Toast;
 
 import com.android.internal.R;
 import com.android.internal.accessibility.AccessibilityShortcutController;
@@ -9865,6 +9866,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case NavbarUtilities.KEY_ACTION_KILL_APP:
                 Utils.killForegroundApp(mContext, mCurrentUserId);
+                // Can't toast on a thread that has not called Looper, so here we are :p
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Context context = Utils.getPackageContext(mContext, Utils.SYSTEMUI_PACKAGE);
+                        Toast.makeText(context != null ? context : context,
+                                R.string.app_killed_message, Toast.LENGTH_SHORT).show();
+                        Utils.killed = true;
+                    }
+                });
                 break;
             case NavbarUtilities.KEY_ACTION_SCREEN_OFF:
                 Utils.switchScreenOff(mContext);

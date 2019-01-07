@@ -16,6 +16,9 @@
 -->
 <resources>
 
+  <!-- Kill app -->
+  <java-symbol type="string" name="app_killed_message" />
+
   <!-- Wallpaper component -->
   <java-symbol type="string" name="default_wallpaper_component_custom" />
 
