@@ -389,4 +389,21 @@ public class Utils {
         }
         return false;
     }
+
+    // Get context from a different package
+    public static Context getPackageContext(Context context, String packageName) {
+        Context pkgContext = null;
+        if (context.getPackageName().equals(packageName)) {
+            pkgContext = context;
+        } else {
+            try {
+                pkgContext = context.createPackageContext(packageName,
+                        Context.CONTEXT_IGNORE_SECURITY
+                                | Context.CONTEXT_INCLUDE_CODE);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return pkgContext;
+    }
 }
