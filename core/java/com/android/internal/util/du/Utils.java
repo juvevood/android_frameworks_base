@@ -356,9 +356,9 @@ public class Utils {
                 int uid = appInfo.uid;
                 // Make sure it's a foreground user application (not system,
                 // root, phone, etc.)
-                if (uid >= Process.FIRST_APPLICATION_UID && uid <= Process.LAST_APPLICATION_UID
+                /*if (uid >= Process.FIRST_APPLICATION_UID && uid <= Process.LAST_APPLICATION_UID
                         && appInfo.importance ==
-                        ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                        ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {*/
                     if (appInfo.pkgList != null && (appInfo.pkgList.length > 0)) {
                         for (String pkg : appInfo.pkgList) {
                             if (!pkg.equals(SYSTEMUI_PACKAGE)
@@ -385,7 +385,7 @@ public class Utils {
                         Process.killProcess(appInfo.pid);
                         return killed;
                     }
-                }
+                //}
             }
         } catch (RemoteException remoteException) {
             // Do nothing; just let it go.
