@@ -4370,6 +4370,12 @@ public final class Settings {
          */
         public static final String DOUBLE_TAP_SLEEP_LOCKSCREEN = "double_tap_sleep_lockscreen";
 
+        /**
+         *Double tap on status to sleep
+         */
+        public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+
+
         /** Whether to allow one finger quick settings expansion on the right side of the statusbar.
          *
          * @hide

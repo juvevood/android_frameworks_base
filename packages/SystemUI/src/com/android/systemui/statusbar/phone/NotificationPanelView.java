@@ -81,6 +81,7 @@ import com.android.systemui.statusbar.stack.AnimationProperties;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
 import com.android.systemui.statusbar.stack.StackStateAnimator;
 import com.android.systemui.tuner.TunerService;
+import android.provider.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,8 +107,8 @@ public class NotificationPanelView extends PanelView implements
     private static final String COUNTER_PANEL_OPEN_PEEK = "panel_open_peek";
 
 
-    private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "juvesystem:STATUS_BAR_QUICK_QS_PULLDOWN";
-    private static final String DOUBLE_TAP_SLEEP_GESTURE = "juvesystem:DOUBLE_TAP_SLEEP_GESTURE";
+    private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "STATUS_BAR_QUICK_QS_PULLDOWN";
+    private static final String DOUBLE_TAP_SLEEP_GESTURE = Settings.System.DOUBLE_TAP_SLEEP_GESTURE;
 
     private static final Rect mDummyDirtyRect = new Rect(0, 0, 1, 1);
 
