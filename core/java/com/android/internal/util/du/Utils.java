@@ -22,6 +22,7 @@ import android.app.ActivityManagerNative;
 import android.app.IActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -31,6 +32,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Process;
@@ -392,6 +394,18 @@ public class Utils {
             killed = false;
         }
         return false;
+    }
+
+    // Method to detect if device is plugged in (wired or wireless)
+    public static boolean isPlugged(Context context) {
+        boolean isPlugged;
+        Intent intent = context.registerReceiver(null, new IntentFilter(
+                Intent.ACTION_BATTERY_CHANGED));
+        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        isPlugged = plugged ==
+                BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+        isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+        return isPlugged;
     }
 
     // Get context from a different package
