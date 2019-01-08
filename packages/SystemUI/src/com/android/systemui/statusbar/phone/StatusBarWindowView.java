@@ -68,16 +68,15 @@ import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.statusbar.DragDownHelper;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
-import com.android.systemui.tuner.TunerService;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-public class StatusBarWindowView extends FrameLayout implements TunerService.Tunable {
+
+public class StatusBarWindowView extends FrameLayout {
     public static final String TAG = "StatusBarWindowView";
     public static final boolean DEBUG = StatusBar.DEBUG;
 
-    private static final String DOUBLE_TAP_SLEEP_GESTURE = Settings.System.DOUBLE_TAP_SLEEP_GESTURE;
     private DragDownHelper mDragDownHelper;
     private DoubleTapHelper mDoubleTapHelper;
     private NotificationStackScrollLayout mStackScrollLayout;
@@ -131,6 +130,17 @@ public class StatusBarWindowView extends FrameLayout implements TunerService.Tun
         }, null, null);
         mQuickQsTotalHeight = getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.quick_qs_total_height);
+        mDoubleTapGesture = new GestureDetector(mContext,
+                new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                PowerManager pm = mContext.getSystemService(PowerManager.class);
+                if (pm != null) {
+                    pm.goToSleep(e.getEventTime());
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -242,19 +252,6 @@ public class StatusBarWindowView extends FrameLayout implements TunerService.Tun
     protected void onAttachedToWindow () {
         super.onAttachedToWindow();
 
-        Dependency.get(TunerService.class).addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
-        mDoubleTapGesture = new GestureDetector(mContext,
-                new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                PowerManager pm = mContext.getSystemService(PowerManager.class);
-                if (pm != null) {
-                    pm.goToSleep(e.getEventTime());
-                }
-                return true;
-            }
-        });
-
         // We need to ensure that our window doesn't suffer from overdraw which would normally
         // occur if our window is translucent. Since we are drawing the whole window anyway with
         // the scrim, we don't need the window to be cleared in the beginning.
@@ -273,15 +270,6 @@ public class StatusBarWindowView extends FrameLayout implements TunerService.Tun
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Dependency.get(TunerService.class).removeTunable(this);
-    }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        if (!DOUBLE_TAP_SLEEP_GESTURE.equals(key)) {
-            return;
-        }
-        mDoubleTapToSleepEnabled = newValue == null || Integer.parseInt(newValue) == 1;
     }
 
     @Override
@@ -870,13 +858,13 @@ public class StatusBarWindowView extends FrameLayout implements TunerService.Tun
     public void setStatusBarWindowViewOptions() {
         ContentResolver resolver = mContext.getContentResolver();
         int isQsQuickPulldown = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 0, UserHandle.USER_CURRENT);
+                Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 1, UserHandle.USER_CURRENT);
         boolean isDoubleTapEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, 0, UserHandle.USER_CURRENT) == 1;
         if (mNotificationPanel != null) {
             mNotificationPanel.setQsQuickPulldown(isQsQuickPulldown);
             mNotificationPanel.setLockscreenDoubleTapToSleep(isDoubleTapEnabled);
+            mDoubleTapToSleepEnabled=isDoubleTapEnabled;
         }
     }
 }
-
