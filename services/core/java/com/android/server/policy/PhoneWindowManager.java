@@ -4081,6 +4081,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Custom event handling for supported key codes.
         if (!Utils.isInLockTaskMode() && NavbarUtilities.canApplyCustomPolicy(keyCode) && !isCustomSource) {
+
             if ((menuKey || backKey || appSwitchKey) && keyguardOn) {
                 // Don't handle the key.
                 return -1;
@@ -4169,22 +4170,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_APP_SWITCH
                             || longPressBehavior == NavbarUtilities.KEY_ACTION_SPLIT_SCREEN
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_SPLIT_SCREEN
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_FLASHLIGHT
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_FLASHLIGHT
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_VOLUME_PANEL
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_VOLUME_PANEL
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_KILL_APP
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_KILL_APP
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_SCREEN_OFF
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_SCREEN_OFF
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_NOTIFICATIONS
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_NOTIFICATIONS
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_POWER_MENU
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_POWER_MENU
-                            || longPressBehavior == NavbarUtilities.KEY_ACTION_SCREENSHOT
-                            || doubleTapBehavior == NavbarUtilities.KEY_ACTION_SCREENSHOT
                             || longPressBehavior == NavbarUtilities.KEY_ACTION_LAST_APP
                             || doubleTapBehavior == NavbarUtilities.KEY_ACTION_LAST_APP) {
                         preloadRecentApps();
