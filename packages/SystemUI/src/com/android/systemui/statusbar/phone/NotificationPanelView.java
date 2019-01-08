@@ -106,6 +106,8 @@ public class NotificationPanelView extends PanelView implements
     static final String COUNTER_PANEL_OPEN_QS = "panel_open_qs";
     private static final String COUNTER_PANEL_OPEN_PEEK = "panel_open_peek";
 
+    private static final String DOUBLE_TAP_SLEEP_GESTURE = Settings.System.DOUBLE_TAP_SLEEP_GESTURE;
+
     private static final Rect mDummyDirtyRect = new Rect(0, 0, 1, 1);
 
     public static final long DOZE_ANIMATION_DURATION = 700;
@@ -364,9 +366,7 @@ public class NotificationPanelView extends PanelView implements
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         FragmentHostManager.get(this).addTagListener(QS.TAG, mFragmentListener);
-
         final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, STATUS_BAR_QUICK_QS_PULLDOWN);
         tunerService.addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
     }
 
@@ -379,9 +379,9 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (STATUS_BAR_QUICK_QS_PULLDOWN.equals(key)) {
-            mOneFingerQuickSettingsIntercept = newValue == null ? 1 : Integer.parseInt(newValue);
-        } else if (DOUBLE_TAP_SLEEP_GESTURE.equals(key)) {
+        System.out.println("juve:"+key);
+        System.out.println("juve:"+DOUBLE_TAP_SLEEP_GESTURE);
+        if (DOUBLE_TAP_SLEEP_GESTURE.equals(key)) {
             mDoubleTapToSleepEnabled = newValue == null || Integer.parseInt(newValue) == 1;
         }
     }

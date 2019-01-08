@@ -77,6 +77,7 @@ public class StatusBarWindowView extends FrameLayout implements TunerService.Tun
     public static final String TAG = "StatusBarWindowView";
     public static final boolean DEBUG = StatusBar.DEBUG;
 
+    private static final String DOUBLE_TAP_SLEEP_GESTURE = Settings.System.DOUBLE_TAP_SLEEP_GESTURE;
     private DragDownHelper mDragDownHelper;
     private DoubleTapHelper mDoubleTapHelper;
     private NotificationStackScrollLayout mStackScrollLayout;
