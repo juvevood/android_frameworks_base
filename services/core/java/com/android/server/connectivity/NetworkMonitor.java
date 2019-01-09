@@ -89,6 +89,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import com.android.internal.util.du.Utils;
 
 /**
  * {@hide}
@@ -110,6 +111,10 @@ public class NetworkMonitor extends StateMachine {
     private static final String DEFAULT_USER_AGENT    = "Mozilla/5.0 (X11; Linux x86_64) "
                                                       + "AppleWebKit/537.36 (KHTML, like Gecko) "
                                                       + "Chrome/60.0.3112.32 Safari/537.36";
+
+    private static final String DEFAULT_HTTPS_URL_CN     = "https://captive.v2ex.co/generate_204";
+    private static final String DEFAULT_HTTP_URL_CN      = "http://captive.v2ex.co/generate_204";
+    private static final String DEFAULT_FALLBACK_URL_CN  = "http://g.cn/generate_204";
 
     private static final int SOCKET_TIMEOUT_MS = 10000;
     private static final int PROBE_TIMEOUT_MS  = 3000;
@@ -881,7 +886,7 @@ public class NetworkMonitor extends StateMachine {
 
     private String getCaptivePortalServerHttpsUrl() {
         return mSettings.getSetting(mContext,
-                Settings.Global.CAPTIVE_PORTAL_HTTPS_URL, DEFAULT_HTTPS_URL);
+                Settings.Global.CAPTIVE_PORTAL_HTTPS_URL, Utils.isChineseLanguage() ? DEFAULT_HTTPS_URL_CN : DEFAULT_HTTPS_URL);
     }
 
     // Static for direct access by ConnectivityService
@@ -892,14 +897,14 @@ public class NetworkMonitor extends StateMachine {
     public static String getCaptivePortalServerHttpUrl(
             NetworkMonitorSettings settings, Context context) {
         return settings.getSetting(
-                context, Settings.Global.CAPTIVE_PORTAL_HTTP_URL, DEFAULT_HTTP_URL);
+                context, Settings.Global.CAPTIVE_PORTAL_HTTP_URL, Utils.isChineseLanguage() ? DEFAULT_HTTP_URL_CN : DEFAULT_HTTP_URL);
     }
 
     private URL[] makeCaptivePortalFallbackUrls() {
         try {
             String separator = ",";
             String firstUrl = mSettings.getSetting(mContext,
-                    Settings.Global.CAPTIVE_PORTAL_FALLBACK_URL, DEFAULT_FALLBACK_URL);
+                    Settings.Global.CAPTIVE_PORTAL_FALLBACK_URL, Utils.isChineseLanguage() ? DEFAULT_FALLBACK_URL_CN : DEFAULT_FALLBACK_URL);
             String joinedUrls = firstUrl + separator + mSettings.getSetting(mContext,
                     Settings.Global.CAPTIVE_PORTAL_OTHER_FALLBACK_URLS,
                     DEFAULT_OTHER_FALLBACK_URLS);
