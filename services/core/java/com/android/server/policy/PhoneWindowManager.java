@@ -289,6 +289,7 @@ import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.ScreenshotHelper;
 import com.android.internal.util.ScreenShapeHelper;
+import com.android.internal.util.du.ActionUtils;
 import com.android.internal.util.du.Utils;
 import com.android.internal.widget.PointerLocationView;
 import com.android.server.GestureLauncherService;
@@ -1049,7 +1050,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     final float distance = event.values[0];
                     if (distance >= PROXIMITY_DISTANCE_THRESHOLD ||
                             distance >= mProximitySensor.getMaximumRange()) {
-                        Utils.toggleCameraFlash();
+                        ActionUtils.toggleCameraFlash();
                     }
                 }
 
@@ -1088,7 +1089,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mHandler.sendMessageDelayed(newMsg, mProximityTimeOut);
             runPostProximityCheck();
         } else {
-            Utils.toggleCameraFlash();
+            ActionUtils.toggleCameraFlash();
         }
     }
 
@@ -4082,8 +4083,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Custom event handling for supported key codes.
         if (!Utils.isInLockTaskMode() && NavbarUtilities.canApplyCustomPolicy(keyCode) && !isCustomSource) {
-
-            if ((menuKey || backKey || appSwitchKey) && keyguardOn) {
+            if ((menuKey || appSwitchKey) && keyguardOn) {
                 // Don't handle the key.
                 return -1;
             }
@@ -9207,13 +9207,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     public void sendCustomAction(Intent intent) {
         String action = intent.getAction();
         if (action != null) {
-            if (Utils.INTENT_SCREENSHOT.equals(action)) {
+            if (ActionUtils.INTENT_SCREENSHOT.equals(action)) {
                 mContext.enforceCallingOrSelfPermission(ACCESS_SURFACE_FLINGER,
                         TAG + "sendCustomAction permission denied");
                 mHandler.removeCallbacks(mScreenshotRunnable);
                 mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
                 mHandler.post(mScreenshotRunnable);
-            } else if (Utils.INTENT_REGION_SCREENSHOT.equals(action)) {
+            } else if (ActionUtils.INTENT_REGION_SCREENSHOT.equals(action)) {
                 mContext.enforceCallingOrSelfPermission(ACCESS_SURFACE_FLINGER,
                         TAG + "sendCustomAction permission denied");
                 mHandler.removeCallbacks(mScreenshotRunnable);
@@ -9856,38 +9856,25 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 NavbarUtilities.toggleSplitScreen();
                 break;
             case NavbarUtilities.KEY_ACTION_FLASHLIGHT:
-                Utils.toggleCameraFlash();
+                ActionUtils.toggleCameraFlash();
                 break;
             case NavbarUtilities.KEY_ACTION_CLEAR_NOTIFICATIONS:
-                Utils.clearAllNotifications();
+                ActionUtils.clearAllNotifications();
                 break;
             case NavbarUtilities.KEY_ACTION_VOLUME_PANEL:
-                Utils.toggleVolumePanel(mContext);
-                break;
-            case NavbarUtilities.KEY_ACTION_KILL_APP:
-                Utils.killForegroundApp(mContext, mCurrentUserId);
-                // Can't toast on a thread that has not called Looper, so here we are :p
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Context context = Utils.getPackageContext(mContext, Utils.SYSTEMUI_PACKAGE);
-                        Toast.makeText(context != null ? context : context,
-                                R.string.app_killed_message, Toast.LENGTH_SHORT).show();
-                        Utils.killed = true;
-                    }
-                });
+                ActionUtils.toggleVolumePanel(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREEN_OFF:
-                Utils.switchScreenOff(mContext);
+                ActionUtils.switchScreenOff(mContext);
                 break;
             case NavbarUtilities.KEY_ACTION_NOTIFICATIONS:
-                Utils.Notifications();
+                ActionUtils.Notifications();
                 break;
             case NavbarUtilities.KEY_ACTION_POWER_MENU:
                 triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, false, true);
                 break;
             case NavbarUtilities.KEY_ACTION_SCREENSHOT:
-                Utils.takeScreenshot(true);
+                ActionUtils.takeScreenshot(true);
                 break;
         }
     }
