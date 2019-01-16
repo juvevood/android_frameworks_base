@@ -80,6 +80,7 @@ ifneq ($(INCREMENTAL_BUILDS),)
 endif
 
 include frameworks/base/packages/SettingsLib/common.mk
+include vendor/support/common.mk
 
 LOCAL_AAPT_FLAGS := --extra-packages com.android.keyguard
 
