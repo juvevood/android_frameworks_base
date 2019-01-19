@@ -5292,6 +5292,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_CLOCK_SELECTION),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.KEYGUARD_MULTIUSER_SWITCH),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -5329,6 +5332,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                    uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_INFO)) ||
                    uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_CLOCK_SELECTION))) {
                 updateKeyguardStatusSettings();
+            } else if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.KEYGUARD_MULTIUSER_SWITCH))) {
+                updateKeyguardStatusBarSettings();
             }
         }
 
@@ -5339,6 +5344,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setStatusBarWindowViewOptions();
             setForceAmbient();
             updateKeyguardStatusSettings();
+            updateKeyguardStatusBarSettings();
         }
     }
 
@@ -5351,6 +5357,10 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private void updateKeyguardStatusSettings() {
         mNotificationPanel.updateKeyguardStatusSettings();
+    }
+
+    private void updateKeyguardStatusBarSettings() {
+        mKeyguardStatusBar.updateSettings();
     }
 
     private void setFpToDismissNotifications() {
